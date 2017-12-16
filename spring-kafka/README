@@ -1,0 +1,19 @@
+Prerequisite
+
+1. JDK 8.0
+2. Gradle 
+3. Eclipse
+4. Apache Kafka
+
+Download & install JDK - https://www.java.com/en/download/help/download_options.xml
+Download & install Gradle - https://gradle.org/install/
+Download & install Eclipse - http://www.eclipse.org/downloads/
+Download & Install Apache Kafka - https://kafka.apache.org/downloads
+
+Before run the application - Start the Kafka Servers and Create a Topic - https://kafka.apache.org/quickstart 
+
+Run the application by using the command - gradle clean build
+
+After build successful, go to build/libs directory. You will find the JAR file and run the JAR file by using the following command - java -jar spring-kafka-0.0.1-SNAPSHOT.jar
+
+
