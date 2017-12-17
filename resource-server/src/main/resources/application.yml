@@ -1,0 +1,8 @@
+server:
+  port: 8081
+security:
+    oauth2:
+        resource:
+            filter-order: 3 
+            jwt: 
+                key-value: <public-key>
