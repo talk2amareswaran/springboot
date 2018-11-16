@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	  	<title>File Upload Demo</title>
+	  	<meta charset="utf-8">
+	  	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="jumbotron jumbotron-fluid">
+		  	<div class="container">
+		    	<h1>File upload demo</h1>      
+		    	<p>File upload demo along with POST data form</p>
+		  	</div>
+		</div>
+		<div class="container">
+		<h1><span class="badge badge-secondary">Add New Employee</span></h1>
+		<div class="alert alert-success">File uploaded successfully</div>
+		<div class="alert alert-danger">File is not uploaded. Error occurred</div>
+		    <div class="form-group">
+		      <label for="name">Name:</label>
+		      <input type="text" class="form-control" id="name" placeholder="Enter Employee name" name="name">
+		    </div>
+		    <div class="form-group">
+		      <label for="designation">Designation:</label>
+		      <input type="text" class="form-control" id="designation" placeholder="Enter Designation" name="designation">
+		    </div>
+			<form id="fileUploadForm">
+			<div class="form-group">
+				<input type="file" class="form-control-file border" name="file">
+			</div>
+		</form>
+			<button type="button" class="btn btn-primary" id="btnSubmit">Submit</button>
+		</div>
+		<br/>
+		<div class="container">
+			<h1><span class="badge badge-secondary">Employee(s) List</span></h1>
+			 <div class="table-responsive">
+				    <table class="table table-hover table-bordered">
+				      <thead>
+				        <tr>
+				          <th>Id</th>
+				          <th>Name</th>
+				          <th>Designation</th>
+				           <th>Profile Picture</th>
+				        </tr>
+				      </thead>
+				      <tbody>
+				      </tbody>
+				    </table>
+				</div>
+			</div>
+			<script>
+			function getEmployeeDetails() {
+				  $.ajax({url: "/employees", success: function(result){
+					  $(".table tbody").html('');
+					  if(result.length>0) {
+					  $.each(result, function( index, value ) {
+						  var htmlStr = "<tr><td>"+result[index].id+"</td><td>"+result[index].name+"</td><td>"+result[index].designation+"</td><td><img src=\""+result[index].profilePicPath+"\"></img></td></tr>";
+						 	$(".table tbody").append(htmlStr);
+						});
+					  } else {
+						  $(".table tbody").append('<tr><td colspan="4" style="color:red;">No records to display</td></tr>');
+					  }
+				    }});
+			}
+				$(document).ready(function () {
+					getEmployeeDetails();
+					$(".alert-success").hide();
+					$(".alert-danger").hide();
+				    $("#btnSubmit").click(function () {
+					    var form = $('#fileUploadForm')[0];
+						var data = new FormData(form);
+				        var jsonDataObj = {
+				        	"name": $("#name").val(),
+				            "designation" : $("#designation").val()
+				        };
+				        data.append("empJson", JSON.stringify(jsonDataObj));
+				        $("#btnSubmit").prop("disabled", true);
+				        $.ajax({
+				            type: "POST",
+				            enctype: 'multipart/form-data',
+				            url: "/employees",
+				            data: data,
+				            processData: false,
+				            contentType: false,
+				            cache: false,
+				            timeout: 600000,
+				            success: function (data) {
+				              
+				                console.log("SUCCESS : ", data);
+				                $("#btnSubmit").prop("disabled", false);
+				                $(".alert-success").show();
+				                $(".alert-danger").hide();
+				                getEmployeeDetails();
+				                
+				            },
+				            error: function (e) {
+				            	 $(".alert-success").hide();
+				                 $(".alert-danger").show();
+				                console.log("ERROR : ", e);
+				                $("#btnSubmit").prop("disabled", false);
+				            }
+				        });
+				    });
+				});
+		</script>
+	</body>
+</html>
